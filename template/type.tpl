@@ -2,7 +2,7 @@
 
 <h3 id="{{ anchorIDForType . }}">
     {{- .Name.Name }}
-    {{ if eq .Kind "Alias" }}(<code>{{.Underlying}}</code> alias)</p>{{ end -}}
+    {{ if eq .Kind "Alias" }}(<code>{{.Underlying}}</code> alias){{ end -}}
 </h3>
 {{ with (typeReferences .) }}
     <p>
@@ -18,9 +18,7 @@
 {{ end }}
 
 
-<p>
     {{ safe (renderComments .CommentLines) }}
-</p>
 
 {{ if .Members }}
 <table>
@@ -34,7 +32,7 @@
         {{ if isExportedType . }}
         <tr>
             <td>
-                <code>apiVersion</code></br>
+                <code>apiVersion</code><br>
                 string</td>
             <td>
                 <code>
@@ -44,7 +42,7 @@
         </tr>
         <tr>
             <td>
-                <code>kind</code></br>
+                <code>kind</code><br>
                 string
             </td>
             <td><code>{{.Name.Name}}</code></td>
