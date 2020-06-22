@@ -294,8 +294,8 @@ func isExportedType(t *types.Type) bool {
 	return ok
 }
 
-func isDisplayed(m types.Member) bool {
-	ctags := types.ExtractCommentTags("+", m.CommentLines)
+func isDisplayed(lines []string) bool {
+	ctags := types.ExtractCommentTags("+", lines)
 	_, yes := ctags["enterprise"]
 	return !yes
 }
@@ -339,7 +339,7 @@ func nl2br(s string) string {
 }
 
 func hiddenMember(m types.Member, c generatorConfig) bool {
-	if !isDisplayed(m) {
+	if !isDisplayed(m.CommentLines) {
 		return true
 	}
 	for _, v := range c.HiddenMemberFields {
@@ -475,6 +475,9 @@ func hideType(t *types.Type, c generatorConfig) bool {
 		if regexp.MustCompile(pattern).MatchString(t.Name.String()) {
 			return true
 		}
+	}
+	if !isDisplayed(t.CommentLines) || isDisplayed(t.SecondClosestCommentLines) {
+		return true
 	}
 	if !isExportedType(t) && unicode.IsLower(rune(t.Name.Name[0])) {
 		// types that start with lowercase
