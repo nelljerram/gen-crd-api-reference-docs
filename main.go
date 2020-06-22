@@ -21,7 +21,7 @@ import (
 	"unicode"
 
 	"github.com/pkg/errors"
-	"github.com/russross/blackfriday/v2"
+	blackfriday "github.com/russross/blackfriday/v2"
 	"k8s.io/gengo/parser"
 	"k8s.io/gengo/types"
 	"k8s.io/klog"
@@ -288,7 +288,13 @@ func findTypeReferences(pkgs []*apiPackage) map[*types.Type][]*types.Type {
 func isExportedType(t *types.Type) bool {
 	// TODO(ahmetb) use types.ExtractSingleBoolCommentTag() to parse +genclient
 	// https://godoc.org/k8s.io/gengo/types#ExtractCommentTags
-	return strings.Contains(strings.Join(t.SecondClosestCommentLines, "\n"), "+genclient")
+	//return strings.Contains(strings.Join(t.SecondClosestCommentLines, "\n"), "+genclient")
+	ctags := types.ExtractCommentTags("+", t.SecondClosestCommentLines)
+	if _, ok := ctags["genclient"]; ok {
+		_, yes := ctags["enterprise"]
+		return !yes
+	}
+	return false
 }
 
 func fieldName(m types.Member) string {
