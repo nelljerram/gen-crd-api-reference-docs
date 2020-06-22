@@ -290,11 +290,14 @@ func isExportedType(t *types.Type) bool {
 	// https://godoc.org/k8s.io/gengo/types#ExtractCommentTags
 	//return strings.Contains(strings.Join(t.SecondClosestCommentLines, "\n"), "+genclient")
 	ctags := types.ExtractCommentTags("+", t.SecondClosestCommentLines)
-	if _, ok := ctags["genclient"]; ok {
-		_, yes := ctags["enterprise"]
-		return !yes
-	}
-	return false
+	_, ok := ctags["genclient"]
+	return ok
+}
+
+func isDisplayed(m types.Member) bool {
+	ctags := types.ExtractCommentTags("+", m.CommentLines)
+	_, yes := ctags["enterprise"]
+	return !yes
 }
 
 func fieldName(m types.Member) string {
@@ -336,6 +339,9 @@ func nl2br(s string) string {
 }
 
 func hiddenMember(m types.Member, c generatorConfig) bool {
+	if !isDisplayed(m) {
+		return true
+	}
 	for _, v := range c.HiddenMemberFields {
 		if m.Name == v {
 			return true
