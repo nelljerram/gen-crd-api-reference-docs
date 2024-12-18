@@ -241,6 +241,24 @@ func containsString(sl []string, str string) bool {
 	return false
 }
 
+func findUnsupported(t *types.Type) bool {
+	if t.Kind == types.Unsupported {
+		klog.Infof("%v itself is Unsupported", *t)
+		return true
+	}
+
+	unsupported := false
+	for _, m := range t.Members {
+		if findUnsupported(m.Type) {
+			unsupported = true
+		}
+	}
+	if unsupported {
+		klog.Infof("%v is therefore Unsupported", *t)
+	}
+	return unsupported
+}
+
 // combineAPIPackages groups the Go packages by the <apiGroup+apiVersion> they
 // offer, and combines the types in them.
 func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
@@ -253,7 +271,7 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 		}
 
 		for s, t := range pkg.Types {
-			if t.Kind == types.Unsupported {
+			if findUnsupported(t) {
 				klog.Infof("%v -> %v", s, *t)
 			}
 		}
