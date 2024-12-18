@@ -457,6 +457,9 @@ func tryDereference(t *types.Type) *types.Type {
 }
 
 func typeDisplayName(t *types.Type, c generatorConfig, typePkgMap map[*types.Type]*apiPackage) string {
+	if t.Kind == types.Unsupported {
+		klog.Infof("%v is Unsupported", *t)
+	}
 	s := typeIdentifier(t)
 	if isLocalType(t, typePkgMap) {
 		s = tryDereference(t).Name.Name
