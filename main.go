@@ -253,7 +253,9 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 		}
 
 		for s, t := range pkg.Types {
-			klog.Infof("%v -> %v", s, *t)
+			if t.Kind == types.Unsupported {
+				klog.Infof("%v -> %v", s, *t)
+			}
 		}
 
 		typeList := make([]*types.Type, 0, len(pkg.Types))
