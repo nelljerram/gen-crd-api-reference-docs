@@ -532,6 +532,7 @@ func sortTypes(typs []*types.Type) []*types.Type {
 }
 
 func visibleTypes(in []*types.Type, c generatorConfig) []*types.Type {
+	klog.Infof("visibleTypes: %v", c)
 	var out []*types.Type
 	for _, t := range in {
 		if t.Kind == types.Unsupported {
