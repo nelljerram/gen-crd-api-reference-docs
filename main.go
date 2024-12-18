@@ -27,7 +27,7 @@ import (
 	"k8s.io/gengo/v2/types"
 	"k8s.io/klog/v2"
 
-	_ "github.com/tigera/operator"
+	_ "github.com/tigera/operator/api/v1"
 )
 
 var (
