@@ -64,3 +64,5 @@ k8s.io/gengo/v2 v2.0.0-20240404160639-a0386bf69313/go.mod h1:VH3AT8AaQOqiGjMF9p0
 k8s.io/klog/v2 v2.2.0/go.mod h1:Od+F08eJP+W3HUb4pSrPpgp9DGU4GzlpG/TmITuYh/Y=
 k8s.io/klog/v2 v2.130.1 h1:n9Xl7H1Xvksem4KFG4PYbdQCQxqc/tTUyrgXaOhHSzk=
 k8s.io/klog/v2 v2.130.1/go.mod h1:3Jpz1GvMt720eyJH1ckRHK1EDfpxISzJ7I9OYgaDtPE=
+github.com/tigera/operator v0.2.2-0.20191022222131-dbb37ab19c3b h1:39gXqHdMffcnR/NDyjXp+FOpsUX5KJfWLGTykrcxYSU=
+github.com/tigera/operator v0.2.2-0.20191022222131-dbb37ab19c3b/go.mod h1:aH+J4pVON0Z/3AEa4pMYRU9NXN5trZcuNA5W6OgtuHI=
