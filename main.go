@@ -344,6 +344,7 @@ func isLocalType(t *types.Type, typePkgMap map[*types.Type]*apiPackage) bool {
 }
 
 func renderComments(s []string, markdown bool) string {
+	klog.Infof("renderComments: %v", s)
 	s = filterCommentTags(s)
 	doc := strings.Join(s, "\n")
 
