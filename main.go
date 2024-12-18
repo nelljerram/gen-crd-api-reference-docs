@@ -294,6 +294,9 @@ func findTypeReferences(pkgs []*apiPackage) map[*types.Type][]*types.Type {
 	m := make(map[*types.Type][]*types.Type)
 	for _, pkg := range pkgs {
 		for _, typ := range pkg.Types {
+			if typ.Kind == types.Unsupported {
+				klog.Infof("%v is Unsupported", *typ)
+			}
 			for _, member := range typ.Members {
 				t := member.Type
 				t = tryDereference(t)
