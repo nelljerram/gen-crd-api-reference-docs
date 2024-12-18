@@ -241,20 +241,20 @@ func containsString(sl []string, str string) bool {
 	return false
 }
 
-func findUnsupported(t *types.Type) bool {
+func findUnsupported(s string, t *types.Type) bool {
 	if t.Kind == types.Unsupported {
-		klog.Infof("%v itself is Unsupported", *t)
+		klog.Infof("%v itself is Unsupported", s)
 		return true
 	}
 
 	unsupported := false
 	for _, m := range t.Members {
-		if findUnsupported(m.Type) {
+		if findUnsupported(m.Name, m.Type) {
 			unsupported = true
 		}
 	}
 	if unsupported {
-		klog.Infof("%v is therefore Unsupported", *t)
+		klog.Infof("%v is therefore Unsupported (%v)", s, *t)
 	}
 	return unsupported
 }
@@ -271,7 +271,7 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 		}
 
 		for s, t := range pkg.Types {
-			if findUnsupported(t) {
+			if findUnsupported(s, t) {
 				klog.Infof("%v -> %v", s, *t)
 			}
 		}
