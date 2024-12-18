@@ -241,6 +241,24 @@ func containsString(sl []string, str string) bool {
 	return false
 }
 
+func findUnsupported(s string, t *types.Type) bool {
+	if t.Kind == types.Unsupported {
+		klog.Infof("%v itself is Unsupported", s)
+		return true
+	}
+
+	unsupported := false
+	for _, m := range t.Members {
+		if findUnsupported(m.Name, m.Type) {
+			unsupported = true
+		}
+	}
+	if unsupported {
+		klog.Infof("%v is therefore Unsupported (%v)", s, *t)
+	}
+	return unsupported
+}
+
 // combineAPIPackages groups the Go packages by the <apiGroup+apiVersion> they
 // offer, and combines the types in them.
 func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
@@ -250,6 +268,12 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 		apiGroup, apiVersion, err := apiVersionForPackage(pkg)
 		if err != nil {
 			return nil, errors.Wrapf(err, "could not get apiVersion for package %s", pkg.Path)
+		}
+
+		for s, t := range pkg.Types {
+			if findUnsupported(s, t) {
+				klog.Infof("%v -> %v", s, *t)
+			}
 		}
 
 		typeList := make([]*types.Type, 0, len(pkg.Types))
@@ -288,6 +312,9 @@ func findTypeReferences(pkgs []*apiPackage) map[*types.Type][]*types.Type {
 	m := make(map[*types.Type][]*types.Type)
 	for _, pkg := range pkgs {
 		for _, typ := range pkg.Types {
+			if typ.Kind == types.Unsupported {
+				klog.Infof("%v is Unsupported", *typ)
+			}
 			for _, member := range typ.Members {
 				t := member.Type
 				t = tryDereference(t)
@@ -322,8 +349,10 @@ func fieldName(m types.Member) string {
 	v = strings.TrimSuffix(v, ",omitempty")
 	v = strings.TrimSuffix(v, ",inline")
 	if v != "" {
+		klog.Infof("fieldName from tag = %v (from %#v)", v, m)
 		return v
 	}
+	klog.Infof("fieldName from member = %v", m.Name)
 	return m.Name
 }
 
@@ -338,6 +367,7 @@ func isLocalType(t *types.Type, typePkgMap map[*types.Type]*apiPackage) bool {
 }
 
 func renderComments(s []string, markdown bool) string {
+	klog.Infof("renderComments: %v", s)
 	s = filterCommentTags(s)
 	doc := strings.Join(s, "\n")
 
@@ -447,6 +477,9 @@ func tryDereference(t *types.Type) *types.Type {
 }
 
 func typeDisplayName(t *types.Type, c generatorConfig, typePkgMap map[*types.Type]*apiPackage) string {
+	if t.Kind == types.Unsupported {
+		klog.Infof("%v is Unsupported", *t)
+	}
 	s := typeIdentifier(t)
 	if isLocalType(t, typePkgMap) {
 		s = tryDereference(t).Name.Name
@@ -507,6 +540,9 @@ func typeReferences(t *types.Type, c generatorConfig, references map[*types.Type
 	}
 	for k := range m {
 		out = append(out, k)
+		if k.Kind == types.Unsupported {
+			klog.Infof("typeReferences: %v is Unsupported", *k)
+		}
 	}
 	sortTypes(out)
 	return out
@@ -526,8 +562,12 @@ func sortTypes(typs []*types.Type) []*types.Type {
 }
 
 func visibleTypes(in []*types.Type, c generatorConfig) []*types.Type {
+	klog.Infof("visibleTypes: %v", c)
 	var out []*types.Type
 	for _, t := range in {
+		if t.Kind == types.Unsupported {
+			klog.Infof("%v is Unsupported", *t)
+		}
 		if !hideType(t, c) {
 			out = append(out, t)
 		}
