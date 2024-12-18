@@ -520,6 +520,9 @@ func typeReferences(t *types.Type, c generatorConfig, references map[*types.Type
 	}
 	for k := range m {
 		out = append(out, k)
+		if k.Kind == types.Unsupported {
+			klog.Infof("typeReferences: %v is Unsupported", *k)
+		}
 	}
 	sortTypes(out)
 	return out
