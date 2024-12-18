@@ -252,6 +252,10 @@ func combineAPIPackages(pkgs []*types.Package) ([]*apiPackage, error) {
 			return nil, errors.Wrapf(err, "could not get apiVersion for package %s", pkg.Path)
 		}
 
+		for s, t := range pkg.Types {
+			klog.Infof("%v -> %v", s, *t)
+		}
+
 		typeList := make([]*types.Type, 0, len(pkg.Types))
 		for _, t := range pkg.Types {
 			typeList = append(typeList, t)
