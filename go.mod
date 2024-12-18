@@ -1,18 +1,10 @@
 module github.com/ahmetb/gen-crd-api-reference-docs
 
 require (
-	github.com/NYTimes/gziphandler v1.0.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday/v2 v2.1.0
-	github.com/tigera/operator v0.2.2-0.20191022222131-dbb37ab19c3b // indirect
 	k8s.io/gengo/v2 v2.0.0-20240404160639-a0386bf69313
 	k8s.io/klog/v2 v2.130.1
-)
-
-require (
-	github.com/go-logr/logr v1.4.1 // indirect
-	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/tools v0.16.1 // indirect
 )
 
 replace github.com/tigera/operator => github.com/tmjd/operator v1.1.0-0.dev.0.20201012182011-a5c179c10a21
