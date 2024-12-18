@@ -349,8 +349,10 @@ func fieldName(m types.Member) string {
 	v = strings.TrimSuffix(v, ",omitempty")
 	v = strings.TrimSuffix(v, ",inline")
 	if v != "" {
+		klog.Infof("fieldName from tag = %v", v)
 		return v
 	}
+	klog.Infof("fieldName from member = %v", m.Name)
 	return m.Name
 }
 
